@@ -5,7 +5,6 @@ import {
   MaxLength,
   IsDateString,
   ValidateIf,
-  IsDefined,
 } from "class-validator";
 import { ERROR_MESSAGES } from "../common/constants";
 import { IsNull } from "typeorm";
@@ -17,7 +16,6 @@ export class CreateTaskDto {
   name: string;
 
   @ValidateIf((o) => o.endDate !== undefined) // Nếu có endDate thì bắt buộc startDate
-  @IsDefined({ message: ERROR_MESSAGES.END_DATE_REQUIRES_START_DATE }) // Không được undefined
   @IsNotEmpty({ message: ERROR_MESSAGES.END_DATE_REQUIRES_START_DATE }) // Không được rỗng
   @IsDateString({}, { message: ERROR_MESSAGES.START_DATE_INVALID })
   startDate?: string;

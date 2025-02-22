@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { CreateTaskUseCase } from "../../application/usecases/createTaskUseCase";
 import { GetTasksUseCase } from "../../application/usecases/getTasksUseCase";
 import { TaskRepositoryImpl } from "../../infrastructure/repositories/taskRepository";
-import { validate } from "class-validator";
 import { plainToInstance } from "class-transformer";
 import { CreateTaskDto } from "../../application/dtos/createTaskDto";
 import { TaskMapper } from "../../infrastructure/mappers/taskMapper";
@@ -21,21 +20,6 @@ export class TaskController {
   static async createTask(req: Request, res: Response) {
     // Đảm bảo req.body là object
     const taskDto = plainToInstance(CreateTaskDto, req.body as object);
-
-    // validate request
-    const errors = await validate(taskDto);
-    if (errors.length > 0) {
-      return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(
-        new ApiResponse(
-          HTTP_STATUS_CODES.BAD_REQUEST,
-          "Validation failed",
-          errors.map((err) => ({
-            field: err.property,
-            messages: Object.values(err.constraints || {}),
-          }))
-        )
-      );
-    }
 
     try {
       const taskEntity = TaskMapper.toEntity(taskDto);
